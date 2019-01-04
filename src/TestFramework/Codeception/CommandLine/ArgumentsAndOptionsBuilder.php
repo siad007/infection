@@ -35,10 +35,8 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\Codeception\CommandLine;
 
-use Infection\Mutant\Mutant;
 use Infection\Mutant\MutantInterface;
 use Infection\TestFramework\CommandLineArgumentsAndOptionsBuilder;
-use Infection\TestFramework\Coverage\CodeCoverageData;
 
 class ArgumentsAndOptionsBuilder implements CommandLineArgumentsAndOptionsBuilder
 {

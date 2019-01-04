@@ -47,9 +47,9 @@ class MutationConfigBuilder extends ConfigBuilder
      */
     private $configurationHelper;
 
-    public function __construct(string $tempDir, string $projectDir, string $originalConfig)
+    public function __construct(string $tempDir, string $projectDir, string $originalConfig, array $srcDirs = [])
     {
-        $this->configurationHelper = new YamlConfigurationHelper($tempDir, $projectDir, $originalConfig);
+        $this->configurationHelper = new YamlConfigurationHelper($tempDir, $projectDir, $originalConfig, $srcDirs);
     }
 
     public function build(MutantInterface $mutant): string
