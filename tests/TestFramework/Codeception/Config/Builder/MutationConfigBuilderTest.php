@@ -11,7 +11,10 @@ namespace Infection\Tests\TestFramework\Codeception\Config\Builder;
 
 use Infection\Mutant\Mutant;
 use Infection\Mutation;
+use Infection\Mutator\Boolean\TrueValue;
+use Infection\Mutator\Util\MutatorConfig;
 use Infection\TestFramework\Codeception\Config\Builder\MutationConfigBuilder;
+use Infection\Tests\AutoReview\MutatorTest;
 use Infection\Utils\TmpDirectoryCreator;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
@@ -60,13 +63,19 @@ class MutationConfigBuilderTest extends MockeryTestCase
         $originalContent = '';
         $initialConfigBuilder = new MutationConfigBuilder($this->tempDir, $this->projectDir, $originalContent, ['src']);
 
-        $mutation = Mockery::mock(Mutation::class);
-        $mutation->shouldReceive('getHash')->andReturn('a1b2c3');
-        $mutation->shouldReceive('getOriginalFilePath')->andReturn('/original/file/path');
+        $mutatorConfig = Mockery::mock(new MutatorConfig([]));
 
-        $mutant = Mockery::mock(Mutant::class);
+        $mutator = Mockery::mock(new TrueValue($mutatorConfig));
+
+        $originalFilePath = '/original/file/path';
+        $mutation = Mockery::mock(new Mutation($originalFilePath, [], $mutator, [], '', true, true, '', 0));
+        $mutation->shouldReceive('getHash')->andReturn('a1b2c3');
+        $mutation->shouldReceive('getOriginalFilePath')->andReturn($originalFilePath);
+
+        $mutatedFilePath = '/mutated/file/path';
+        $mutant = Mockery::mock(new Mutant($mutatedFilePath, $mutation, '', true, []));
         $mutant->shouldReceive('getMutation')->andReturn($mutation);
-        $mutant->shouldReceive('getMutatedFilePath')->andReturn('/mutated/file/path');
+        $mutant->shouldReceive('getMutatedFilePath')->andReturn($mutatedFilePath);
 
         $config = Yaml::parseFile($initialConfigBuilder->build($mutant));
 
