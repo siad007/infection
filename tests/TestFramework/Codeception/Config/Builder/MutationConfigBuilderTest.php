@@ -67,10 +67,22 @@ final class MutationConfigBuilderTest extends MockeryTestCase
         $originalContent = '';
         $initialConfigBuilder = new MutationConfigBuilder($this->tempDir, $this->projectDir, $originalContent, ['src']);
 
-        $mutator = Mockery::mock(new TrueValue(new MutatorConfig([])));
-
         $originalFilePath = '/original/file/path';
-        $mutation = Mockery::mock(new Mutation($originalFilePath, [], $mutator, [], '', true, true, '', 0));
+        $mutation = Mockery::mock(
+            new Mutation(
+                $originalFilePath,
+                [],
+                new TrueValue(
+                    new MutatorConfig([])
+                ),
+                [],
+                '',
+                true,
+                true,
+                '',
+                0
+            )
+        );
         $mutation->shouldReceive('getHash')->andReturn('a1b2c3');
         $mutation->shouldReceive('getOriginalFilePath')->andReturn($originalFilePath);
 
