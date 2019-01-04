@@ -38,7 +38,11 @@ namespace Infection\TestFramework\Codeception\Adapter;
 use Infection\TestFramework\AbstractTestFrameworkAdapter;
 use Infection\TestFramework\TestFrameworkTypes;
 
-class CodeceptionAdapter extends AbstractTestFrameworkAdapter
+/**
+ * Class CodeceptionAdapter
+ * @internal
+ */
+final class CodeceptionAdapter extends AbstractTestFrameworkAdapter
 {
     const EXECUTABLE = 'codecept';
     const JUNIT_FILE_NAME = 'codeception.junit.xml';

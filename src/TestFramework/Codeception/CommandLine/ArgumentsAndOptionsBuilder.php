@@ -38,7 +38,11 @@ namespace Infection\TestFramework\Codeception\CommandLine;
 use Infection\Mutant\MutantInterface;
 use Infection\TestFramework\CommandLineArgumentsAndOptionsBuilder;
 
-class ArgumentsAndOptionsBuilder implements CommandLineArgumentsAndOptionsBuilder
+/**
+ * Class ArgumentsAndOptionsBuilder
+ * @internal
+ */
+final class ArgumentsAndOptionsBuilder implements CommandLineArgumentsAndOptionsBuilder
 {
     /**
      * @var string

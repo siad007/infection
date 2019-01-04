@@ -38,7 +38,11 @@ namespace Infection\TestFramework\Codeception\Config\Builder;
 use Infection\TestFramework\Codeception\Config\YamlConfigurationHelper;
 use Infection\TestFramework\Config\InitialConfigBuilder as ConfigBuilder;
 
-class InitialConfigBuilder implements ConfigBuilder
+/**
+ * Class InitialConfigBuilder
+ * @internal
+ */
+final class InitialConfigBuilder implements ConfigBuilder
 {
     /**
      * @var YamlConfigurationHelper

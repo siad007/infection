@@ -40,7 +40,11 @@ use Infection\Mutant\MutantInterface;
 use Infection\TestFramework\Codeception\Config\YamlConfigurationHelper;
 use Infection\TestFramework\Config\MutationConfigBuilder as ConfigBuilder;
 
-class MutationConfigBuilder extends ConfigBuilder
+/**
+ * Class MutationConfigBuilder
+ * @internal
+ */
+final class MutationConfigBuilder extends ConfigBuilder
 {
     /**
      * @var YamlConfigurationHelper

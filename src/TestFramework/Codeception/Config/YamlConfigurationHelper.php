@@ -38,7 +38,11 @@ namespace Infection\TestFramework\Codeception\Config;
 use Infection\Config\Exception\InvalidConfigException;
 use Symfony\Component\Yaml\Yaml;
 
-class YamlConfigurationHelper
+/**
+ * Class YamlConfigurationHelper
+ * @internal
+ */
+final class YamlConfigurationHelper
 {
     /**
      * @var string
