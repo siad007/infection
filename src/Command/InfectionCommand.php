@@ -90,7 +90,7 @@ final class InfectionCommand extends BaseCommand
                 'test-framework',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Name of the Test framework to use (phpunit, phpspec)',
+                'Name of the Test framework to use (' . implode(', ', TestFrameworkTypes::TYPES) . ')',
                 ''
             )
             ->addOption(
@@ -341,9 +341,19 @@ final class InfectionCommand extends BaseCommand
         $extraOptions = $this->input->hasOption('test-framework-options')
             ? $this->input->getOption('test-framework-options') : $this->getContainer()->get('infection.config')->getTestFrameworkOptions();
 
-        return TestFrameworkTypes::PHPUNIT === $testFrameworkKey
-            ? new PhpUnitExtraOptions($extraOptions)
-            : new PhpSpecExtraOptions($extraOptions);
+        if ($testFrameworkKey == TestFrameworkTypes::PHPUNIT) {
+            return new PhpUnitExtraOptions($extraOptions);
+        }
+
+        if ($testFrameworkKey == TestFrameworkTypes::PHPSPEC) {
+            return new PhpSpecExtraOptions($extraOptions);
+        }
+
+        if ($testFrameworkKey == TestFrameworkTypes::CODECEPTION) {
+            return new CodeceptionExtraOptions($extraOptions);
+        }
+
+        throw new \InvalidArgumentException($testFrameworkKey);
     }
 
     private function runConfigurationCommand(Locator $locator): void
