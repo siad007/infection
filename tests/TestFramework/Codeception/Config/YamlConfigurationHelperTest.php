@@ -15,7 +15,11 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
-class YamlConfigurationHelperTest extends TestCase
+/**
+ * Class YamlConfigurationHelperTest
+ * @internal
+ */
+final class YamlConfigurationHelperTest extends TestCase
 {
     /**
      *@var Filesystem

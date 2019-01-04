@@ -21,7 +21,11 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
-class MutationConfigBuilderTest extends MockeryTestCase
+/**
+ * Class MutationConfigBuilderTest
+ * @internal
+ */
+final class MutationConfigBuilderTest extends MockeryTestCase
 {
     /**
      *@var Filesystem
@@ -63,9 +67,7 @@ class MutationConfigBuilderTest extends MockeryTestCase
         $originalContent = '';
         $initialConfigBuilder = new MutationConfigBuilder($this->tempDir, $this->projectDir, $originalContent, ['src']);
 
-        $mutatorConfig = Mockery::mock(new MutatorConfig([]));
-
-        $mutator = Mockery::mock(new TrueValue($mutatorConfig));
+        $mutator = Mockery::mock(new TrueValue(new MutatorConfig([])));
 
         $originalFilePath = '/original/file/path';
         $mutation = Mockery::mock(new Mutation($originalFilePath, [], $mutator, [], '', true, true, '', 0));
