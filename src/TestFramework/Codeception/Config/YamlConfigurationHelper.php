@@ -35,6 +35,7 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\Codeception\Config;
 
+use Infection\Config\Exception\InvalidConfigException;
 use Symfony\Component\Yaml\Yaml;
 
 class YamlConfigurationHelper
@@ -79,7 +80,13 @@ class YamlConfigurationHelper
 
     public function getTransformedConfig(string $outputDir = '.', bool $coverageEnabled = true): string
     {
-        $tempDirPartsCount = substr_count(realpath($this->tempDir), DIRECTORY_SEPARATOR) + 1;
+        $file = realpath($this->tempDir);
+
+        if ($file === false) {
+            throw new InvalidConfigException('Temp dir not found.');
+        }
+
+        $tempDirPartsCount = substr_count($file, DIRECTORY_SEPARATOR) + 1;
         $pathToProjectDir = str_repeat('../', $tempDirPartsCount) . $this->projectDir . '/';
 
         $config = Yaml::parse($this->originalConfig);
