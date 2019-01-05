@@ -64,11 +64,24 @@ final class InitialConfigBuilderTest extends TestCase
      */
     private $projectDir;
 
-    public function test_it_can_build_initial_config()
+    protected function setUp()
+    {
+        $this->filesystem = new Filesystem();
+        $this->workspace = sys_get_temp_dir() . '/infection-test' . \microtime(true) . \random_int(100, 999);
+        $this->tempDir = (new TmpDirectoryCreator($this->filesystem))->createAndGet($this->workspace);
+        $this->projectDir = __DIR__ . '/../../../../Fixtures/Files/codeception/project-path';
+    }
+
+    protected function tearDown()
+    {
+        $this->filesystem->remove($this->workspace);
+    }
+
+    public function test_it_can_build_initial_config(): void
     {
         $originalContent = '';
         $initialConfigBuilder = new InitialConfigBuilder($this->tempDir, $this->projectDir, $originalContent, ['src']);
-        $config = Yaml::parseFile($initialConfigBuilder->build());
+        $config = Yaml::parseFile($initialConfigBuilder->build('2.5'));
         $this->assertSame(realpath($this->projectDir . '/tests'), realpath($config['paths']['tests']));
         $this->assertSame(realpath($this->tempDir . '/.'), realpath($config['paths']['output']));
         $this->assertSame(realpath($this->projectDir . '/tests/_data'), realpath($config['paths']['data']));
@@ -83,18 +96,5 @@ final class InitialConfigBuilderTest extends TestCase
     private static function rp(string $path): string
     {
         return realpath(substr($path, 0, -1)) . '*';
-    }
-
-    protected function setUp()
-    {
-        $this->filesystem = new Filesystem();
-        $this->workspace = sys_get_temp_dir() . '/infection-test' . \microtime(true) . \random_int(100, 999);
-        $this->tempDir = (new TmpDirectoryCreator($this->filesystem))->createAndGet($this->workspace);
-        $this->projectDir = __DIR__ . '/../../../../Fixtures/Files/codeception/project-path';
-    }
-
-    protected function tearDown()
-    {
-        $this->filesystem->remove($this->workspace);
     }
 }
