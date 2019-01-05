@@ -33,49 +33,44 @@
 
 declare(strict_types=1);
 
-namespace Infection\Mutator\Util;
+namespace Infection\Tests\TestFramework\Codeception\Adapter;
 
-use Infection\Visitor\ReflectionVisitor;
-use PhpParser\Node;
+use Infection\Finder\AbstractExecutableFinder;
+use Infection\TestFramework\Codeception\Adapter\CodeceptionAdapter;
+use Infection\TestFramework\Codeception\Config\Builder\InitialConfigBuilder;
+use Infection\TestFramework\Codeception\Config\Builder\MutationConfigBuilder;
+use Infection\TestFramework\CommandLineArgumentsAndOptionsBuilder;
+use Infection\Utils\VersionParser;
+use Mockery;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-abstract class Mutator
+/**
+ * Class CodeceptionAdapterTest
+ * @internal
+ */
+final class CodeceptionAdapterTest extends MockeryTestCase
 {
     /**
-     * @var MutatorConfig
+     * @dataProvider passProvider
      */
-    private $config;
-
-    public function __construct(MutatorConfigIgnorable $config)
+    public function test_it_determines_whether_tests_pass_or_not(string $output, bool $expectedResult)
     {
-        $this->config = $config;
+        $executableFined = Mockery::mock(AbstractExecutableFinder::class);
+        $initialConfigBuilder = Mockery::mock(InitialConfigBuilder::class);
+        $mutationConfigBuilder = Mockery::mock(MutationConfigBuilder::class);
+        $cliArgumentsBuilder = Mockery::mock(CommandLineArgumentsAndOptionsBuilder::class);
+        $versionParser = Mockery::mock(VersionParser::class);
+        $adapter = new CodeceptionAdapter($executableFined, $initialConfigBuilder, $mutationConfigBuilder,
+            $cliArgumentsBuilder, $versionParser);
+        $result = $adapter->testsPass($output);
+        $this->assertSame($expectedResult, $result);
     }
 
-    /**
-     * @return Node|Node[]|\Generator
-     */
-    abstract public function mutate(Node $node);
-
-    final public function shouldMutate(Node $node): bool
+    public function passProvider()
     {
-        if (!$this->mutatesNode($node)) {
-            return false;
-        }
-
-        $reflectionClass = $node->getAttribute(ReflectionVisitor::REFLECTION_CLASS_KEY, false);
-
-        if (!$reflectionClass) {
-            return true;
-        }
-
-        return !$this->config->isIgnored($reflectionClass->getName(), $node->getAttribute(ReflectionVisitor::FUNCTION_NAME, ''));
+        yield ['OK, but incomplete, skipped, or risky tests!', true];
+        yield ['OK (5 tests, 3 assertions)', true];
+        yield ['FAILURES!', false];
+        yield ['ERRORS!', false];
     }
-
-    final public static function getName(): string
-    {
-        $parts = explode('\\', static::class);
-
-        return end($parts);
-    }
-
-    abstract protected function mutatesNode(Node $node): bool;
 }

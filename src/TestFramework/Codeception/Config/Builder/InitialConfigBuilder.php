@@ -42,7 +42,7 @@ use Infection\TestFramework\Config\InitialConfigBuilder as ConfigBuilder;
  * Class InitialConfigBuilder
  * @internal
  */
-final class InitialConfigBuilder implements ConfigBuilder
+class InitialConfigBuilder implements ConfigBuilder
 {
     /**
      * @var YamlConfigurationHelper

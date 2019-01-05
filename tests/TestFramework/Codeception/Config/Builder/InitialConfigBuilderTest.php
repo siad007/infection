@@ -35,90 +35,66 @@ declare(strict_types=1);
 
 namespace Infection\Tests\TestFramework\Codeception\Config\Builder;
 
-use Infection\Mutant\MutantInterface;
-use Infection\MutationInterface;
-use Infection\TestFramework\Codeception\Config\Builder\MutationConfigBuilder;
+use Infection\TestFramework\Codeception\Config\Builder\InitialConfigBuilder;
 use Infection\Utils\TmpDirectoryCreator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class MutationConfigBuilderTest
+ * Class InitialConfigBuilderTest
  * @internal
  */
-final class MutationConfigBuilderTest extends TestCase
+final class InitialConfigBuilderTest extends TestCase
 {
-    private const HASH = 'a1b2c3';
-
     /**
      * @var Filesystem
      */
     private $filesystem;
-
     /**
      * @var string
      */
     private $workspace;
-
     /**
      * @var string
      */
     private $tempDir;
+    /**
+     * @var string
+     */
+    private $projectDir;
 
-    private $mutation;
-    private $mutant;
+    public function test_it_can_build_initial_config()
+    {
+        $originalContent = '';
+        $initialConfigBuilder = new InitialConfigBuilder($this->tempDir, $this->projectDir, $originalContent, ['src']);
+        $config = Yaml::parseFile($initialConfigBuilder->build());
+        $this->assertSame(realpath($this->projectDir . '/tests'), realpath($config['paths']['tests']));
+        $this->assertSame(realpath($this->tempDir . '/.'), realpath($config['paths']['output']));
+        $this->assertSame(realpath($this->projectDir . '/tests/_data'), realpath($config['paths']['data']));
+        $this->assertSame(realpath($this->projectDir . '/tests/_support'), realpath($config['paths']['support']));
+        $this->assertSame(realpath($this->projectDir . '/tests/_envs'), realpath($config['paths']['envs']));
+        $this->assertTrue($config['coverage']['enabled']);
+        $this->assertSame([self::rp($this->projectDir . '/src/*')],
+            array_map(self::class . '::rp', $config['coverage']['include']));
+        $this->assertSame([], $config['coverage']['exclude']);
+    }
+
+    private static function rp(string $path): string
+    {
+        return realpath(substr($path, 0, -1)) . '*';
+    }
 
     protected function setUp()
     {
-        $this->workspace = sys_get_temp_dir() . '/infection-test' . \microtime(true) . \random_int(100, 999);
-
         $this->filesystem = new Filesystem();
-
+        $this->workspace = sys_get_temp_dir() . '/infection-test' . \microtime(true) . \random_int(100, 999);
         $this->tempDir = (new TmpDirectoryCreator($this->filesystem))->createAndGet($this->workspace);
-
-        $this->mutation = $this->createMock(MutationInterface::class);
-        $this->mutation
-            ->method('getHash')
-            ->willReturn(self::HASH);
-        $this->mutation
-            ->method('getOriginalFilePath')
-            ->willReturn('/original/file/path');
-
-        $this->mutant = $this->createMock(MutantInterface::class);
-        $this->mutant
-            ->method('getMutation')
-            ->willReturn($this->mutation);
-        $this->mutant
-            ->method('getMutatedFilePath')
-            ->willReturn('/mutated/file/path');
+        $this->projectDir = __DIR__ . '/../../../../Fixtures/Files/codeception/project-path';
     }
 
     protected function tearDown()
     {
         $this->filesystem->remove($this->workspace);
-    }
-
-    public function test_it_can_build_mutation_config()
-    {
-        $projectDir = __DIR__ . '/../../../../Fixtures/Files/codeception/project-path';
-
-        $originalContent = '';
-        $initialConfigBuilder = new MutationConfigBuilder($this->tempDir, $projectDir, $originalContent, ['src']);
-
-        $config = Yaml::parseFile($initialConfigBuilder->build($this->mutant));
-
-        mkdir($config['paths']['output']);
-
-        $this->assertSame(realpath($projectDir . '/tests'), realpath($config['paths']['tests']));
-        $this->assertSame(realpath($this->tempDir . '/a1b2c3'), realpath($config['paths']['output']));
-        $this->assertSame(realpath($projectDir . '/tests/_data'), realpath($config['paths']['data']));
-        $this->assertSame(realpath($projectDir . '/tests/_support'), realpath($config['paths']['support']));
-        $this->assertSame(realpath($projectDir . '/tests/_envs'), realpath($config['paths']['envs']));
-
-        $this->assertFalse($config['coverage']['enabled']);
-
-        $this->assertSame([], $config['coverage']['include']);
-        $this->assertSame([], $config['coverage']['exclude']);
     }
 }
