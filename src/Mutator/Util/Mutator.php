@@ -45,7 +45,7 @@ abstract class Mutator
      */
     private $config;
 
-    public function __construct(MutatorConfigIgnorable $config)
+    public function __construct(MutatorConfig $config)
     {
         $this->config = $config;
     }
