@@ -49,24 +49,13 @@ final class CodeceptionAdapter extends AbstractTestFrameworkAdapter
 
     public function testsPass(string $output): bool
     {
-        if (preg_match('/^FAILURES!/im', $output)) {
+        if (strpos($output, 'FAILURES!') !== false || strpos($output, 'ERRORS!') !== false) {
             return false;
         }
 
-        if (preg_match('/^ERRORS!/im', $output)) {
-            return false;
-        }
-
-        // OK (XX tests, YY assertions)
-        $isOk = (bool) preg_match('/^OK\s\(/m', $output);
-
-        // "OK, but incomplete, skipped, or risky tests!"
-        $isOkWithInfo = (bool) preg_match('/^OK,/m', $output);
-
-        // "Warnings!" - e.g. when deprecated functions are used, but tests pass
-        $isWarning = (bool) preg_match('/^WARNINGS!/im', $output);
-
-        return $isOk || $isOkWithInfo || $isWarning;
+        return strpos($output, 'OK (') !== false
+            || strpos($output, 'OK,') !== false
+            || strpos($output, 'WARNINGS!') !== false;
     }
 
     public function getName(): string

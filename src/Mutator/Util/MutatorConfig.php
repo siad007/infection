@@ -38,7 +38,7 @@ namespace Infection\Mutator\Util;
 /**
  * @internal
  */
-final class MutatorConfig
+final class MutatorConfig implements MutatorConfigIgnorable
 {
     /**
      * @var array
@@ -61,7 +61,9 @@ final class MutatorConfig
         }
 
         foreach ($this->ignoreConfig as $ignorePattern) {
-            if (fnmatch($ignorePattern, $class, FNM_NOESCAPE) || fnmatch($ignorePattern, $class . '::' . $method, FNM_NOESCAPE)) {
+            if (fnmatch($ignorePattern, $class, FNM_NOESCAPE)
+                || fnmatch($ignorePattern, $class . '::' . $method, FNM_NOESCAPE)
+            ) {
                 return true;
             }
         }

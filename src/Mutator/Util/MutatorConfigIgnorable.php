@@ -33,34 +33,17 @@
 
 declare(strict_types=1);
 
-namespace Infection\TestFramework\Codeception\Config\Builder;
-
-use Infection\TestFramework\Codeception\Config\YamlConfigurable;
-use Infection\TestFramework\Codeception\Config\YamlConfigurationHelper;
-use Infection\TestFramework\Config\InitialConfigBuilder as ConfigBuilder;
+namespace Infection\Mutator\Util;
 
 /**
- * Class InitialConfigBuilder
  * @internal
  */
-class InitialConfigBuilder implements ConfigBuilder
+interface MutatorConfigIgnorable
 {
     /**
-     * @var YamlConfigurable
+     * @param string $class
+     * @param string $method
+     * @return bool
      */
-    private $configurationHelper;
-
-    public function __construct(string $tempDir, string $projectDir, string $originalConfig, array $srcDirs)
-    {
-        $this->configurationHelper = new YamlConfigurationHelper($tempDir, $projectDir, $originalConfig, $srcDirs);
-    }
-
-    public function build(string $version): string
-    {
-        $pathToInitialConfigFile = $this->configurationHelper->getTempDir() . DIRECTORY_SEPARATOR . 'codeception.initial.infection.yml';
-
-        file_put_contents($pathToInitialConfigFile, $this->configurationHelper->getTransformedConfig());
-
-        return $pathToInitialConfigFile;
-    }
+    public function isIgnored(string $class, string $method): bool;
 }

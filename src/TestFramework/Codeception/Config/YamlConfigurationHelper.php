@@ -42,7 +42,7 @@ use Symfony\Component\Yaml\Yaml;
  * Class YamlConfigurationHelper
  * @internal
  */
-final class YamlConfigurationHelper
+final class YamlConfigurationHelper implements YamlConfigurable
 {
     /**
      * @var string
@@ -94,8 +94,8 @@ final class YamlConfigurationHelper
         $pathToProjectDir = str_repeat('../', $tempDirPartsCount) . $this->projectDir . '/';
 
         $config = Yaml::parse($this->originalConfig);
-        if (!$config !== null) {
-            $config = $this->updatePaths($config, $pathToProjectDir);
+        if ($config === null) {
+            $config = $this->updatePaths([], $pathToProjectDir);
         }
 
         $config['paths'] = [
