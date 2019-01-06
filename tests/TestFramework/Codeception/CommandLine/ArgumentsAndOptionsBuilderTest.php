@@ -35,18 +35,17 @@ declare(strict_types=1);
 
 namespace Infection\Tests\TestFramework\Codeception\CommandLine;
 
-use Infection\Mutant\Mutant;
-use Infection\Mutation;
+use Infection\Mutant\MutantInterface;
+use Infection\MutationInterface;
 use Infection\TestFramework\Codeception\CommandLine\ArgumentsAndOptionsBuilder;
 use Infection\TestFramework\Coverage\CodeCoverageData;
-use Mockery;
-use Mockery\Adapter\Phpunit\MockeryTestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class ArgumentsAndOptionsBuilderTest
  * @internal
  */
-final class ArgumentsAndOptionsBuilderTest extends MockeryTestCase
+final class ArgumentsAndOptionsBuilderTest extends TestCase
 {
     public function test_it_builds_correct_command()
     {
@@ -70,11 +69,15 @@ final class ArgumentsAndOptionsBuilderTest extends MockeryTestCase
 
         $configPath = '/config/path';
 
-        $mutation = Mockery::mock(Mutation::class);
-        $mutation->shouldReceive('getHash')->andReturn('a1b2c3');
+        $mutation = $this->getMockBuilder(MutationInterface::class)
+            ->setMethods(['getHash'])
+            ->getMock();
+        $mutation->method('getHash')->willReturn('a1b2c3');
 
-        $mutant = Mockery::mock(Mutant::class);
-        $mutant->shouldReceive('getMutation')->andReturn($mutation);
+        $mutant = $this->getMockBuilder(MutantInterface::class)
+            ->setMethods(['getMutation'])
+            ->getMock();
+        $mutant->method('getMutation')->willReturn($mutation);
 
         $builder = new ArgumentsAndOptionsBuilder($tempPath);
 

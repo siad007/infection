@@ -41,14 +41,13 @@ use Infection\TestFramework\CommandLineArgumentsAndOptionsBuilder;
 use Infection\TestFramework\Config\InitialConfigBuilder;
 use Infection\TestFramework\Config\MutationConfigBuilder;
 use Infection\Utils\VersionParser;
-use Mockery;
-use Mockery\Adapter\Phpunit\MockeryTestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class CodeceptionAdapterTest
  * @internal
  */
-final class CodeceptionAdapterTest extends MockeryTestCase
+final class CodeceptionAdapterTest extends TestCase
 {
     /**
      * @dataProvider passProvider
