@@ -44,7 +44,7 @@ use Infection\TestFramework\Config\MutationConfigBuilder as ConfigBuilder;
  * Class MutationConfigBuilder
  * @internal
  */
-class MutationConfigBuilder extends ConfigBuilder
+final class MutationConfigBuilder extends ConfigBuilder
 {
     /**
      * @var YamlConfigurationHelper
