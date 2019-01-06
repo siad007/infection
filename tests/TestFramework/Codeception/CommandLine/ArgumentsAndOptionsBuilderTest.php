@@ -104,7 +104,6 @@ final class ArgumentsAndOptionsBuilderTest extends TestCase
         $this->assertContains('run', $command);
         $this->assertContains('--no-colors', $command);
         $this->assertContains('--config=' . $configPath, $command);
-        $this->assertContains('--ext "Infection\TestFramework\Codeception\CustomAutoloadFilePath"', $command);
         $this->assertContains('--fail-fast', $command);
         $this->assertContains('--verbose', $command);
     }
