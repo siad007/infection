@@ -70,13 +70,31 @@ final class ArgumentsAndOptionsBuilderTest extends TestCase
         $configPath = '/config/path';
 
         $mutation = $this->getMockBuilder(MutationInterface::class)
-            ->setMethods(['getHash'])
-            ->getMock();
+            ->setMethods(
+                [
+                    'getHash',
+                    'getMutator',
+                    'getAttributes',
+                    'getOriginalFilePath',
+                    'getMutatedNodeClass',
+                    'getOriginalFileAst',
+                    'isOnFunctionSignature',
+                    'isCoveredByTest',
+                    'getMutatedNode',
+                ]
+            )->getMock();
         $mutation->method('getHash')->willReturn('a1b2c3');
 
         $mutant = $this->getMockBuilder(MutantInterface::class)
-            ->setMethods(['getMutation'])
-            ->getMock();
+            ->setMethods(
+                [
+                    'getMutation',
+                    'getMutatedFilePath',
+                    'getDiff',
+                    'isCoveredByTest',
+                    'getCoverageTests',
+                ]
+            )->getMock();
         $mutant->method('getMutation')->willReturn($mutation);
 
         $builder = new ArgumentsAndOptionsBuilder($tempPath);
