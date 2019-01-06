@@ -37,9 +37,9 @@ namespace Infection\Tests\TestFramework\Codeception\Adapter;
 
 use Infection\Finder\AbstractExecutableFinder;
 use Infection\TestFramework\Codeception\Adapter\CodeceptionAdapter;
-use Infection\TestFramework\Codeception\Config\Builder\InitialConfigBuilder;
-use Infection\TestFramework\Codeception\Config\Builder\MutationConfigBuilder;
 use Infection\TestFramework\CommandLineArgumentsAndOptionsBuilder;
+use Infection\TestFramework\Config\InitialConfigBuilder;
+use Infection\TestFramework\Config\MutationConfigBuilder;
 use Infection\Utils\VersionParser;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
@@ -55,13 +55,20 @@ final class CodeceptionAdapterTest extends MockeryTestCase
      */
     public function test_it_determines_whether_tests_pass_or_not(string $output, bool $expectedResult)
     {
-        $executableFined = Mockery::mock(AbstractExecutableFinder::class);
-        $initialConfigBuilder = Mockery::mock(InitialConfigBuilder::class);
-        $mutationConfigBuilder = Mockery::mock(MutationConfigBuilder::class);
-        $cliArgumentsBuilder = Mockery::mock(CommandLineArgumentsAndOptionsBuilder::class);
-        $versionParser = Mockery::mock(VersionParser::class);
-        $adapter = new CodeceptionAdapter($executableFined, $initialConfigBuilder, $mutationConfigBuilder,
-            $cliArgumentsBuilder, $versionParser);
+        $executableFined = $this->getMockForAbstractClass(AbstractExecutableFinder::class);
+        $initialConfigBuilder = $this->getMockBuilder(InitialConfigBuilder::class)->getMock();
+        $mutationConfigBuilder = $this->getMockForAbstractClass(MutationConfigBuilder::class);
+        $cliArgumentsBuilder = $this->getMockForAbstractClass(CommandLineArgumentsAndOptionsBuilder::class);
+        $versionParser = $this->getMockBuilder(VersionParser::class);
+
+        $adapter = new CodeceptionAdapter(
+            $executableFined,
+            $initialConfigBuilder,
+            $mutationConfigBuilder,
+            $cliArgumentsBuilder,
+            $versionParser
+        );
+
         $result = $adapter->testsPass($output);
         $this->assertSame($expectedResult, $result);
     }
