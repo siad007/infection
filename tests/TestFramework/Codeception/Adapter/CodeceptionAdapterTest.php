@@ -59,7 +59,7 @@ final class CodeceptionAdapterTest extends MockeryTestCase
         $initialConfigBuilder = $this->getMockBuilder(InitialConfigBuilder::class)->getMock();
         $mutationConfigBuilder = $this->getMockForAbstractClass(MutationConfigBuilder::class);
         $cliArgumentsBuilder = $this->getMockForAbstractClass(CommandLineArgumentsAndOptionsBuilder::class);
-        $versionParser = $this->getMockBuilder(VersionParser::class);
+        $versionParser = $this->getMockBuilder(VersionParser::class)->getMock();
 
         $adapter = new CodeceptionAdapter(
             $executableFined,
