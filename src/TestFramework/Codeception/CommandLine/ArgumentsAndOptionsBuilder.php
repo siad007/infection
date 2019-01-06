@@ -67,7 +67,7 @@ final class ArgumentsAndOptionsBuilder implements CommandLineArgumentsAndOptions
         if ($mutant !== null) {
             $options[] = '--fail-fast';
         } else {
-            $options[] = '--coverage-phpunit';
+            $options[] = '--coverage-phpunit=coverage-phpunit';
         }
 
         $options[] = $extraOptions;

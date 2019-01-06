@@ -60,7 +60,7 @@ final class ArgumentsAndOptionsBuilderTest extends TestCase
         $this->assertContains('run', $command);
         $this->assertContains('--no-colors', $command);
         $this->assertContains('--config=' . $configPath, $command);
-        $this->assertContains('--coverage-phpunit ' . CodeCoverageData::CODECEPTION_COVERAGE_DIR, $command);
+        $this->assertContains('--coverage-phpunit=' . CodeCoverageData::CODECEPTION_COVERAGE_DIR, $command);
     }
 
     public function test_it_builds_correct_command_with_mutant()
