@@ -84,33 +84,27 @@ final class YamlConfigurationHelper implements YamlConfigurable
 
     public function getTransformedConfig(string $outputDir = '.', bool $coverageEnabled = true): string
     {
-        $file = realpath($this->tempDir);
-
-        if ($file === false) {
-            throw new InvalidConfigException('Temp dir not found.');
-        }
-
-        $tempDirPartsCount = substr_count($file, DIRECTORY_SEPARATOR) + 1;
-        $pathToProjectDir = str_repeat('../', $tempDirPartsCount) . $this->projectDir . '/';
+        $tempDirParts = explode(DIRECTORY_SEPARATOR, realpath($this->tempDir));
+        $pathToProjectDir = $this->projectDir . '/';
 
         $config = Yaml::parse($this->originalConfig);
-        if ($config === null) {
-            $config = $this->updatePaths([], $pathToProjectDir);
+        if ($config !== null) {
+            $config = $this->updatePaths($config, $pathToProjectDir);
         }
 
         $config['paths'] = [
-            'tests'   => $config['paths']['tests'] ?? $pathToProjectDir . 'tests',
+            'tests'   => ($config['paths']['tests'] ?? $pathToProjectDir . 'tests'),
             'output'  => $this->tempDir . '/' . $outputDir,
-            'data'    => $config['paths']['data'] ?? $pathToProjectDir . 'tests/_data',
-            'support' => $config['paths']['support'] ?? $pathToProjectDir . 'tests/_support',
-            'envs'    => $config['paths']['envs'] ?? $pathToProjectDir . 'tests/_envs',
+            'data'    => ($config['paths']['data'] ?? $pathToProjectDir . 'tests/_data'),
+            'support' => ($config['paths']['support'] ?? $pathToProjectDir . 'tests/_support'),
+            'envs'    => ($config['paths']['envs'] ?? $pathToProjectDir . 'tests/_envs'),
         ];
 
         $config['coverage'] = [
             'enabled' => $coverageEnabled,
             'include' => $coverageEnabled ? array_map(
                 function ($dir) use ($pathToProjectDir) {
-                    return $pathToProjectDir . trim($dir, '/') . '/*.php';
+                    return $pathToProjectDir . trim($dir, '/\\') . DIRECTORY_SEPARATOR . '*';
                 },
                 $this->srcDirs
             ) : [],
