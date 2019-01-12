@@ -84,7 +84,6 @@ final class YamlConfigurationHelper implements YamlConfigurable
 
     public function getTransformedConfig(string $outputDir = '.', bool $coverageEnabled = true): string
     {
-        $tempDirParts = explode(DIRECTORY_SEPARATOR, realpath($this->tempDir));
         $pathToProjectDir = $this->projectDir . '/';
 
         $config = Yaml::parse($this->originalConfig);
